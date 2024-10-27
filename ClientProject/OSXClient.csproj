@@ -55,4 +55,13 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>TRACE;OSX;CLIENT</DefineConstants>
   </PropertyGroup>
+
+  <Target Name="CopyFiles" AfterTargets="Build">
+    <ItemGroup>
+      <Assemblies Include="$(TargetDir)$(TargetName).dll" />
+      <DepsFiles Include="$(TargetDir)$(TargetName).deps.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Assemblies)" DestinationFiles="$(ModDeployDir)bin\Client\OSX\$(TargetName).dll" />
+    <Copy SourceFiles="@(DepsFiles)" DestinationFiles="$(ModDeployDir)bin\Client\OSX\$(TargetName).deps.json" />
+  </Target>
 </Project>

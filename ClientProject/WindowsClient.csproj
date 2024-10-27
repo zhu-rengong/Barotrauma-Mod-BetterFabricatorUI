@@ -62,4 +62,13 @@
     <PlatformTarget>x64</PlatformTarget>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <Target Name="CopyFiles" AfterTargets="Build">
+    <ItemGroup>
+      <Assemblies Include="$(TargetDir)$(TargetName).dll" />
+      <DepsFiles Include="$(TargetDir)$(TargetName).deps.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Assemblies)" DestinationFiles="$(ModDeployDir)bin\Client\Windows\$(TargetName).dll" />
+    <Copy SourceFiles="@(DepsFiles)" DestinationFiles="$(ModDeployDir)bin\Client\Windows\$(TargetName).deps.json" />
+  </Target>
 </Project>
