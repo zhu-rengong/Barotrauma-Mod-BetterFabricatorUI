@@ -15,10 +15,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DefineConstants>TRACETRACE;SERVER;WINDOWS</DefineConstants>
+    <OutputPath>bin\$(Configuration)Windows\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>TRACETRACE;SERVER;WINDOWS</DefineConstants>
+    <OutputPath>bin\$(Configuration)Windows\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
