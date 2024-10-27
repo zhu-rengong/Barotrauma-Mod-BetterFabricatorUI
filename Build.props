@@ -2,7 +2,8 @@
     <PropertyGroup>
         <!-- IMPORTANT: Should point to <Barotrauma_Install>\LocalMods\<MyModName>\ -->
         <!-- IMPORTANT: ModDeplyDir Path must end with '\' -->
-        <ModDeployDir>H:\Source\Barotrauma\LocalMods\BetterFabricatorUI\</ModDeployDir>
+        <ModDeployDirWithoutBackslash>H:\Source\Barotrauma\LocalMods\BetterFabricatorUI</ModDeployDirWithoutBackslash>
+        <ModDeployDir>$(ModDeployDirWithoutBackslash)\</ModDeployDir>
         <!-- IMPORTANT: Avoid the use of special (IE: / : ; , \ < > ?) (periods "." are good) and non-english characters in the AssemblyName.-->
         <AssemblyName>BetterFabricatorUI</AssemblyName>
     </PropertyGroup>
