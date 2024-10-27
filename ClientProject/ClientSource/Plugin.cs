@@ -35,14 +35,6 @@ namespace BetterFabricatorUI
                 var innerArea = mainFrame.Parent as GUILayoutGroup;
                 var paddedFrame = innerArea.Parent as GUILayoutGroup;
 
-                if (innerArea.Children.FirstOrNone(
-                    child => child is GUILayoutGroup layoutGroup && layoutGroup.Children.Any(
-                        child2 => child2 is GUIButton && child2.Style.Identifier.StartsWith("CategoryButton.")
-                    )).TryUnwrap(out GUILayoutGroup? categoryButtonContainer))
-                {
-                    // ToDo: Nothing to do
-                }
-
                 // Expand the height of the gui for digging a modding area
                 float expandedSizeForModdingFrame = 0.05f;
                 Vector2 originalGuiFrameSize = fabricator.GuiFrame.RectTransform.RelativeSize;
@@ -227,8 +219,6 @@ namespace BetterFabricatorUI
             {
                 var fabricator = __instance;
 
-                LuaCsLogger.LogMessage($"[{nameof(BetterFabricatorUI)}] Start further filtering recipes for {fabricator.Item}");
-
                 if (!cachedFabricatorContentPackageFilter.TryGetValue(fabricator, out GUIDropDown contentPackageSelector)) { return; }
                 var selectedContentPackages = contentPackageSelector.SelectedDataMultiple.Cast<ContentPackage>().ToHashSet();
                 if (selectedContentPackages.Count == 0) { return; }
@@ -248,7 +238,6 @@ namespace BetterFabricatorUI
                 }
 
                 fabricator.HideEmptyItemListCategories();
-                LuaCsLogger.LogMessage($"[{nameof(BetterFabricatorUI)}] Finish filtering recipes for {fabricator.Item}");
             }
         }
 
