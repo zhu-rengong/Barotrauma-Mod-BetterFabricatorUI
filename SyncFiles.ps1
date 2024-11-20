@@ -43,7 +43,7 @@ function Sync-FilesWithLogging {
     Write-Host $separatorLine
     Write-Host "Start syncing files......"
     Write-Host "Source: ""$source"""
-    Write-Host "Destination: ""$source"""
+    Write-Host "Destination: ""$target"""
     Write-Host ""
 
     # Create dictionaries to store file info for quick lookup

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using HarmonyLib;
+using static HarmonyLib.Code;
 using Barotrauma;
 using Barotrauma.Extensions;
 using Barotrauma.Items.Components;
-using Barotrauma.Networking;
-using HarmonyLib;
-using Microsoft.Xna.Framework;
-using MoonSharp.Interpreter;
-using static HarmonyLib.Code;
 
 namespace BetterFabricatorUI
 {
@@ -19,11 +15,10 @@ namespace BetterFabricatorUI
         private static Dictionary<Fabricator, GUIDropDown> cachedFabricatorContentPackageFilter = new();
 
         [HarmonyPatch(declaringType: typeof(Fabricator))]
-        [HarmonyPatch(methodName: nameof(Fabricator.CreateGUI))]
-        class Patch_Fabricator_CreateGUI
+        class Patch_Fabricator
         {
-            [HarmonyPostfix]
-            static void MakeFabricatorBetterAgain(Fabricator __instance)
+            [HarmonyPatch(methodName: nameof(Fabricator.CreateGUI)), HarmonyPostfix]
+            static void ModdingGui(Fabricator __instance)
             {
                 var fabricator = __instance;
 
@@ -95,7 +90,7 @@ namespace BetterFabricatorUI
                         tickBox.text.OverrideTextColor(GUIStyle.Green);
                     }
 
-                    // Collapse content package selector when clicking RMB on any option
+                    // Collapse content package filter when clicking RMB on any option
                     tickBox.OnSecondaryClicked = (GUIComponent component, object userData) =>
                     {
                         contentPackageFilter.Dropped = false;
@@ -110,10 +105,10 @@ namespace BetterFabricatorUI
                     tickBox.HoverColor = new Color(50, 50, 50, 100);
                 });
 
-                SetSelectorText();
-                contentPackageFilter.AfterSelected += (_, _) => SetSelectorText();
+                SetFilterText();
+                contentPackageFilter.AfterSelected += (_, _) => SetFilterText();
 
-                bool SetSelectorText()
+                bool SetFilterText()
                 {
                     if (contentPackageFilter.SelectedIndexMultiple.Count() == 0)
                     {
@@ -144,7 +139,7 @@ namespace BetterFabricatorUI
                             }
                         }
                         contentPackageFilter.button.GetChild<GUITextBlock>().Text = RichString.Rich(
-                            "‖color:gui.yellow‖[‖color:end‖" + LocalizedString.Join(" ‖color:gui.yellow‖][‖color:end‖ ", texts) + "‖color:gui.yellow‖]‖color:end‖");
+                            "‖color:gui.yellow‖[‖color:end‖" + LocalizedString.Join("‖color:gui.yellow‖][‖color:end‖", texts) + "‖color:gui.yellow‖]‖color:end‖");
                         contentPackageFilter.ButtonTextColor = GUIStyle.TextColorNormal;
                     }
 
@@ -163,43 +158,40 @@ namespace BetterFabricatorUI
                 bool FilterByContentPacakge()
                 {
                     var selectedContentPackages = contentPackageFilter.SelectedDataMultiple.Cast<ContentPackage>().ToHashSet();
-                    fabricator.itemCategoryButtons.ForEach(button =>
+                    if (selectedContentPackages.Count == 0)
                     {
-                        if (selectedContentPackages.Count == 0)
+                        fabricator.itemCategoryButtons.ForEach(button => button.Enabled = true);
+                    }
+                    else
+                    {
+                        MapEntityCategory filteredCategories = new();
+                        fabricator.fabricationRecipes.Values.ForEach(recipe =>
                         {
-                            fabricator.itemCategoryButtons.ForEach(button => button.Enabled = true);
-                        }
-                        else
-                        {
-                            MapEntityCategory filteredCategories = new();
-                            fabricator.fabricationRecipes.Values.ForEach(recipe =>
+                            if (recipe?.TargetItem is ItemPrefab ti
+                                && ti.ContentPackage is ContentPackage contentPackage
+                                && selectedContentPackages.Contains(contentPackage))
                             {
-                                if (recipe?.TargetItem is ItemPrefab ti
-                                    && ti.ContentPackage is ContentPackage contentPackage
-                                    && selectedContentPackages.Contains(contentPackage))
-                                {
-                                    filteredCategories |= ti.Category;
-                                }
-                            });
+                                filteredCategories |= ti.Category;
+                            }
+                        });
 
-                            fabricator.itemCategoryButtons.ForEach(button =>
+                        fabricator.itemCategoryButtons.ForEach(button =>
+                        {
+                            var category = (MapEntityCategory?)button.UserData;
+                            if (category.HasValue)
                             {
-                                var category = (MapEntityCategory?)button.UserData;
-                                if (category.HasValue)
+                                button.Enabled = filteredCategories.HasFlag(category);
+                                if (!button.Enabled && button.Selected)
                                 {
-                                    button.Enabled = filteredCategories.HasFlag(category);
-                                    if (!button.Enabled && button.Selected)
+                                    button.Selected = false;
+                                    if (categoryButtonAll is not null)
                                     {
-                                        button.Selected = false;
-                                        if (categoryButtonAll is not null)
-                                        {
-                                            categoryButtonAll.OnClicked(categoryButtonAll, categoryButtonAll.UserData);
-                                        }
+                                        categoryButtonAll.OnClicked(categoryButtonAll, categoryButtonAll.UserData);
                                     }
                                 }
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
 
                     fabricator.FilterEntities(fabricator.selectedItemCategory, fabricator.itemFilterBox?.Text ?? string.Empty);
 
@@ -208,19 +200,14 @@ namespace BetterFabricatorUI
 
                 cachedFabricatorContentPackageFilter[fabricator] = contentPackageFilter;
             }
-        }
 
-        [HarmonyPatch(declaringType: typeof(Fabricator))]
-        [HarmonyPatch(methodName: nameof(Fabricator.FilterEntities))]
-        class Patch_Fabricator_FilterEntities
-        {
-            [HarmonyPostfix]
+            [HarmonyPatch(methodName: nameof(Fabricator.FilterEntities)), HarmonyPostfix]
             static void FurtherFilterEntities(Fabricator __instance, MapEntityCategory? category, string filter)
             {
                 var fabricator = __instance;
 
-                if (!cachedFabricatorContentPackageFilter.TryGetValue(fabricator, out GUIDropDown contentPackageSelector)) { return; }
-                var selectedContentPackages = contentPackageSelector.SelectedDataMultiple.Cast<ContentPackage>().ToHashSet();
+                if (!cachedFabricatorContentPackageFilter.TryGetValue(fabricator, out GUIDropDown contentPackageFilter)) { return; }
+                var selectedContentPackages = contentPackageFilter.SelectedDataMultiple.Cast<ContentPackage>().ToHashSet();
                 if (selectedContentPackages.Count == 0) { return; }
 
                 foreach (GUIComponent child in fabricator.itemList.Content.Children)
@@ -242,10 +229,9 @@ namespace BetterFabricatorUI
         }
 
         [HarmonyPatch(declaringType: typeof(Entity))]
-        [HarmonyPatch(methodName: nameof(Entity.RemoveAll))]
-        class Patch_Entity_RemoveAll
+        class Patch_Entity
         {
-            [HarmonyPostfix]
+            [HarmonyPatch(methodName: nameof(Entity.RemoveAll)), HarmonyPostfix]
             static void Uncache()
             {
                 LuaCsLogger.LogMessage($"[{nameof(BetterFabricatorUI)}] Uncache {cachedFabricatorContentPackageFilter.Count} fabricator(s)");

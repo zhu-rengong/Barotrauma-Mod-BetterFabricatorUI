@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Barotrauma;
 using Barotrauma.Items.Components;
 using HarmonyLib;
-using Microsoft.Xna.Framework;
 
 
 #if CLIENT
@@ -25,9 +23,9 @@ namespace BetterFabricatorUI
 
         public void Initialize()
         {
-            harmony = new Harmony("whosyourdaddy.betterfabricatorui");
+            LuaCsLogger.LogMessage($"[{nameof(BetterFabricatorUI)}] Start patching {nameof(Fabricator)}");
+            harmony = new Harmony("com.whosyourdaddy.betterfabricatorui");
             harmony.PatchAll();
-            LuaCsLogger.LogMessage($"Start patching {nameof(Fabricator)}");
         }
 
         public void OnLoadCompleted()
