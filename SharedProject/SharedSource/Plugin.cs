@@ -1,48 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using System.Runtime.CompilerServices;
-using Barotrauma;
-using Barotrauma.Items.Components;
-using HarmonyLib;
+﻿using HarmonyLib;
 
+namespace BetterFabricatorUI;
 
-#if CLIENT
-[assembly: IgnoresAccessChecksTo("Barotrauma")]
-#endif
-#if SERVER
-[assembly: IgnoresAccessChecksTo("DedicatedServer")]
-#endif
-[assembly: IgnoresAccessChecksTo("BarotraumaCore")]
-
-namespace BetterFabricatorUI
+public partial class Plugin : IAssemblyPlugin
 {
-    public partial class Plugin : IAssemblyPlugin
+    // These are automatically assigned by the plugin service after the Constructor is called
+#pragma warning disable CS8618
+    public IConfigService ConfigService { get; set; }
+    public IPluginManagementService PluginManagementService { get; set; }
+    public ILoggerService LoggerService { get; set; }
+    public IConsoleCommandsService ConsoleCommandsService { get; set; }
+#pragma warning restore CS8618
+
+    public ContentPackage _package = null!;
+
+    public Harmony? harmony;
+
+    public void Initialize()
     {
-        private Harmony harmony;
+        // When your plugin is loading, use this instead of the constructor for code relying on
+        // the services above.
 
-        public void Initialize()
+        if (PluginManagementService.TryGetPackageForPlugin<Plugin>(out var package))
         {
-            LuaCsLogger.LogMessage($"[{nameof(BetterFabricatorUI)}] Start patching {nameof(Fabricator)}");
-            harmony = new Harmony("com.whosyourdaddy.betterfabricatorui");
-            harmony.PatchAll();
+            _package = package;
         }
 
-        public void OnLoadCompleted()
-        {
-
-        }
-
-        public void PreInitPatching()
-        {
-            // Not yet supported: Called during the Barotrauma startup phase before vanilla content is loaded.
-        }
-
-        public void Dispose()
-        {
-            
-            harmony?.UnpatchAll();
-            harmony = null;
-        }
+        harmony = new("betterfabricatorui");
+        harmony.PatchAll();
     }
+
+    public void OnLoadCompleted()
+    {
+        // After all plugins have loaded
+        // Put code that interacts with other plugins here.
+    }
+
+    public void PreInitPatching()
+    {
+        // Called right after the constructor
+    }
+
+    public void Dispose()
+    {
+        // Cleanup your plugin!
+
+        harmony?.UnpatchSelf();
+        harmony = null;
+    }
+
 }
