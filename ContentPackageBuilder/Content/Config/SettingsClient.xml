@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Client-only settings -->
+<Configuration>
+    <Settings>
+        <Setting Name="HasInitializedConfiguration" Type="bool" Value="false" ShowInMenus="false" />
+        <Setting Name="PinyinSearchEnabled" Type="bool" Value="false" />
+    </Settings>
+</Configuration>

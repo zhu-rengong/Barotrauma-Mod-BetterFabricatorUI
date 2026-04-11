@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<infotexts language="Traditional Chinese" nowhitespace="true" translatedname="中文(繁體)">
+  <!-- Settings -->
+  <BetterFabricatorUI.PinyinSearchEnabled.DisplayName>啟用拼音搜尋以查找加工台配方</BetterFabricatorUI.PinyinSearchEnabled.DisplayName>
+  <BetterFabricatorUI.PinyinSearchEnabled.Tooltip>允許你使用中文漢字的拼音全拼、聲母及其首字母作為關鍵字查找配方，開啟後，輸入“chuansong”或“cs”即可快速得到“傳送”等相關內容。</BetterFabricatorUI.PinyinSearchEnabled.Tooltip>
+  <BetterFabricatorUI.PinyinSearchEnabled.DisplayCategory>QoL</BetterFabricatorUI.PinyinSearchEnabled.DisplayCategory>
+</infotexts>

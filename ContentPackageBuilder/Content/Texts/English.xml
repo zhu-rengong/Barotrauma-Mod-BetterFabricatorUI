@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<infotexts language="English" nowhitespace="false" translatedname="English">
+  <!-- Settings -->
+  <BetterFabricatorUI.PinyinSearchEnabled.DisplayName>Enable Pinyin Search For Fabricator Recipe</BetterFabricatorUI.PinyinSearchEnabled.DisplayName>
+  <BetterFabricatorUI.PinyinSearchEnabled.Tooltip>Allows you to search for recipes using the full Pinyin spelling, initials, or first letters of Chinese characters as keywords. Once enabled, typing "chuansong" or "cs" will quickly get "传送" (teleport/transmission) and similar terms.</BetterFabricatorUI.PinyinSearchEnabled.Tooltip>
+  <BetterFabricatorUI.PinyinSearchEnabled.DisplayCategory>QoL</BetterFabricatorUI.PinyinSearchEnabled.DisplayCategory>
+</infotexts>

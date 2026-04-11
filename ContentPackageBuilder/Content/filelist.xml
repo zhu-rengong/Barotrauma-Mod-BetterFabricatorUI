@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <contentpackage name="BetterFabricatorUI" steamworkshopid="2811300302" corepackage="false" modversion="1.3.0" gameversion="1.12.6.2">
-
+    <Text file="%ModDir%/Texts/English.xml" />
+    <Text file="%ModDir%/Texts/SimplifiedChinese.xml" />
+    <Text file="%ModDir%/Texts/TraditionalChinese.xml" />
 </contentpackage>

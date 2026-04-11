@@ -7,6 +7,24 @@ public static class PinyinHelper
 {
     private static readonly Dictionary<char, List<string>> pinyinPrefixesCache = new();
 
+    /// <summary>
+    /// 判断模式字符串是否与目标文本的任意连续子串匹配，支持中文字符的拼音前缀模糊匹配。
+    /// </summary>
+    /// <param name="pattern">要匹配的模式字符串</param>
+    /// <param name="text">目标文本</param>
+    /// <param name="comparison">字符比较规则，默认忽略大小写</param>
+    /// <returns>
+    /// 若模式与文本的某一子串匹配，返回 <see langword="true"/>；否则返回 <see langword="false"/>。
+    /// 若任一参数为 <see langword="null"/> 或空，返回 <see langword="false"/>。
+    /// </returns>
+    /// <remarks>
+    /// 匹配规则：
+    /// <list type="bullet">
+    /// <item><description>普通字符按指定的 <paramref name="comparison"/> 逐字比对。</description></item>
+    /// <item><description>中文字符允许以其完整拼音或声母前缀（如 "zh", "c", "s" 等）进行匹配。</description></item>
+    /// <item><description>模式必须从文本的某一位置开始被完全消耗，方可视为匹配成功。</description></item>
+    /// </list>
+    /// </remarks>
     public static bool IsMatch(string pattern, string text, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
         if (string.IsNullOrEmpty(pattern) || string.IsNullOrEmpty(text)) { return false; }

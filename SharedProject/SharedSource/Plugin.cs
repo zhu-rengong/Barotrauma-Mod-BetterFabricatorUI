@@ -28,6 +28,19 @@ public partial class Plugin : IAssemblyPlugin
 
         harmony = new("betterfabricatorui");
         harmony.PatchAll();
+
+        LoadConfig();
+
+        if (!HasInitializedConfiguration)
+        {
+            if (GameSettings.CurrentConfig.Language == "Simplified Chinese".ToLanguageIdentifier()
+                || GameSettings.CurrentConfig.Language == "Traditional Chinese".ToLanguageIdentifier())
+            {
+                PinyinSearchEnabled = true;
+            }
+        }
+
+        HasInitializedConfiguration = true;
     }
 
     public void OnLoadCompleted()
