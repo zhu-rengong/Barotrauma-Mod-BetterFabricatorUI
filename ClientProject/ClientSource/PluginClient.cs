@@ -7,6 +7,7 @@ using static HarmonyLib.Code;
 using Barotrauma;
 using Barotrauma.Extensions;
 using Barotrauma.Items.Components;
+using Microsoft.International.Converters.PinYinConverter;
 
 namespace BetterFabricatorUI;
 
@@ -201,10 +202,29 @@ public partial class Plugin : IAssemblyPlugin
             cachedFabricatorContentPackageFilter[fabricator] = contentPackageFilter;
         }
 
+        [HarmonyPatch(methodName: nameof(Fabricator.FilterEntities)), HarmonyPrefix]
+        static void SkipOriginalTextFilter(ref string filter, out string __state)
+        {
+            __state = filter;
+            filter = null!;
+        }
+
         [HarmonyPatch(methodName: nameof(Fabricator.FilterEntities)), HarmonyPostfix]
-        static void FurtherFilterEntities(Fabricator __instance, MapEntityCategory? category, string filter)
+        static void FurtherFilterEntities(Fabricator __instance, MapEntityCategory? category, string __state)
         {
             var fabricator = __instance;
+            var textFilter = __state;
+
+            foreach (GUIComponent child in fabricator.itemList.Content.Children)
+            {
+                if (!child.Visible) { continue; }
+                if (child.UserData is FabricationRecipe recipe)
+                {
+                    child.Visible = string.IsNullOrWhiteSpace(textFilter)
+                        || recipe.DisplayName.Contains(textFilter, StringComparison.OrdinalIgnoreCase)
+                        || PinyinHelper.IsMatch(textFilter, recipe.DisplayName.Value, StringComparison.OrdinalIgnoreCase);
+                }
+            }
 
             if (!cachedFabricatorContentPackageFilter.TryGetValue(fabricator, out var contentPackageFilter)) { return; }
             var selectedContentPackages = contentPackageFilter.SelectedDataMultiple.Cast<ContentPackage>().ToHashSet();

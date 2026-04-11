@@ -6,10 +6,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Build.props = Build.props
 		README.md = README.md
-		Deploy-InMemoryCSharpMod.ps1 = Deploy-InMemoryCSharpMod.ps1
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedProject", "SharedProject\SharedSource.shproj", "{3C1540C8-8235-4E85-8BFF-9AF5FE32FE99}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedSource", "SharedProject\SharedSource.shproj", "{3C1540C8-8235-4E85-8BFF-9AF5FE32FE99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsClient", "ClientProject\WindowsClient.csproj", "{1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D}"
 EndProject
@@ -41,5 +40,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D5E6F7A-8B9C-0D1E-2F3A-4B5C6D7E8F9A}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedProject\SharedProject.projitems*{1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d}*SharedItemsImports = 5
+		SharedProject\SharedProject.projitems*{2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e}*SharedItemsImports = 5
+		SharedProject\SharedProject.projitems*{3c1540c8-8235-4e85-8bff-9af5fe32fe99}*SharedItemsImports = 13
+		SharedProject\SharedProject.projitems*{3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
