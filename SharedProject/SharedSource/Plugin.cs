@@ -21,26 +21,16 @@ public partial class Plugin : IAssemblyPlugin
         // When your plugin is loading, use this instead of the constructor for code relying on
         // the services above.
 
-        if (PluginManagementService.TryGetPackageForPlugin<Plugin>(out var package))
+        if (!PluginManagementService.TryGetPackageForPlugin<Plugin>(out _package))
         {
-            _package = package;
+            LoggerService.LogError("Failed to find package!");
+            return;
         }
 
         harmony = new("betterfabricatorui");
         harmony.PatchAll();
 
         LoadConfig();
-
-        if (!HasInitializedConfiguration)
-        {
-            if (GameSettings.CurrentConfig.Language == "Simplified Chinese".ToLanguageIdentifier()
-                || GameSettings.CurrentConfig.Language == "Traditional Chinese".ToLanguageIdentifier())
-            {
-                PinyinSearchEnabled = true;
-            }
-        }
-
-        HasInitializedConfiguration = true;
     }
 
     public void OnLoadCompleted()
