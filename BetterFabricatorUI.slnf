@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "BetterFabricatorUI.sln",
+    "projects": [
+      "ClientProject\\WindowsClient.csproj",
+      "SharedProject\\SharedSource.shproj"
+    ]
+  }
+}

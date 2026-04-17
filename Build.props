@@ -28,6 +28,7 @@
 
     <!-- User/Mod Settings -->
     <PropertyGroup>
+        <GameExecutablePath>E:\Program Files (x86)\Steam\steamapps\common\Barotrauma\Barotrauma.exe</GameExecutablePath>
         <!-- IMPORTANT: Should point to <Barotrauma_Install>\LocalMods\<MyModName>\ -->
         <!-- IMPORTANT: ModDeplyDir Path must end with '\' -->
         <ModDeployDir>H:\Source\Barotrauma\LocalMods\BetterFabricatorUI</ModDeployDir>
